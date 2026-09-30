@@ -13,7 +13,8 @@ const connectMongoDB = async () => {
     const MONGODB_CONNECTION_TIMEOUT = process.env.MONGODB_CONNECTION_TIMEOUT;
 
     connectionPromise = mongoose
-      .connect(`${MONGODB_CONNECTION_STRING}/${MONGODB_DATABASE_NAME}`, {
+      .connect(MONGODB_CONNECTION_STRING, {
+        dbName: MONGODB_DATABASE_NAME,
         serverSelectionTimeoutMS: MONGODB_CONNECTION_TIMEOUT,
       })
       .then((conn) => {
