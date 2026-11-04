@@ -10,7 +10,10 @@ const {
   getActividadesByCategoryController,
 } = require("../controllers/actividades.controller");
 
-const { patchUserPremium } = require("../controllers/users.controller");
+const {
+  getCurrentUser,
+  patchUserPremium,
+} = require("../controllers/users.controller");
 
 const {
   getCategoriasController,
@@ -59,6 +62,7 @@ router.put(
 );
 
 //RUTAS PARA USUARIOS
+router.get("/usuarios/me", getCurrentUser);
 router.patch("/usuarios/premium", patchUserPremium);
 
 //RUTAS PARA CATEGORIAS

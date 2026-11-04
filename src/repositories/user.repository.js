@@ -5,6 +5,10 @@ const findUserByUsername = async (username) => {
   return await User.findOne({ username: username });
 };
 
+const findUserById = async (id) => {
+  return await User.findById(id).select("-password");
+};
+
 const saveUser = async (name, username, password, telefono, avatarUrl) => {
   console.log(name, username, password, telefono, avatarUrl);
 
@@ -48,6 +52,7 @@ const cambiarPlanUsuario = async (username) => {
 
 module.exports = {
   findUserByUsername,
+  findUserById,
   saveUser,
   cambiarPlanUsuario,
 };
