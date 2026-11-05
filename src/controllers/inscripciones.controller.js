@@ -3,6 +3,7 @@ const {
   getInscripcionesPaginated,
   createInscripcion,
   deleteInscripcionById,
+  updateInscripcionDateById,
 } = require("../repositories/inscripciones.repository");
 
 const sendSMS = require("../services/sms.service");
@@ -98,9 +99,37 @@ const deleteInscripcionController = async (req, res) => {
   }
 };
 
+const patchInscripcionDateController = async (req, res) => {
+  const { id: userId } = req.user;
+  const { id: inscripcionId } = req.params;
+
+  try {
+    const updatedInscripcion = await updateInscripcionDateById(
+      inscripcionId,
+      userId,
+      req.body.date,
+    );
+
+    if (!updatedInscripcion) {
+      return res.status(404).json({
+        message: "Inscripción no encontrada",
+      });
+    }
+
+    return res.status(200).json(updatedInscripcion);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Error al actualizar la fecha de inscripción.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getInscripcionesController,
   getInscripcionControllerById,
   postInscripcionController,
   deleteInscripcionController,
+  patchInscripcionDateController,
 };

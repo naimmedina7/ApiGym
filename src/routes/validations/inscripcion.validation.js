@@ -7,4 +7,8 @@ const inscripcionValidation = Joi.object({
   activityName: Joi.string(),
 });
 
-module.exports = { inscripcionValidation };
+const inscripcionDateValidation = Joi.object({
+  date: Joi.date().required(),
+});
+
+module.exports = { inscripcionValidation, inscripcionDateValidation };

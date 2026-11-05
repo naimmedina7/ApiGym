@@ -53,6 +53,14 @@ const deleteInscripcionById = async (inscripcionId, userId) => {
   return await Inscripcion.deleteOne({ _id: inscripcionId, userId: userId });
 };
 
+const updateInscripcionDateById = async (inscripcionId, userId, date) => {
+  return await Inscripcion.findOneAndUpdate(
+    { _id: inscripcionId, userId },
+    { $set: { date } },
+    { returnDocument: "after", runValidators: true },
+  );
+};
+
 const getInscripcionesPaginated = async (userId, page = 1, limit = 5) => {
   const skip = (page - 1) * limit;
 
@@ -76,4 +84,5 @@ module.exports = {
   getInscripcionesPaginated,
   createInscripcion,
   deleteInscripcionById,
+  updateInscripcionDateById,
 };
