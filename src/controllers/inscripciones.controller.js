@@ -104,19 +104,31 @@ const patchInscripcionDateController = async (req, res) => {
   const { id: inscripcionId } = req.params;
 
   try {
-    const updatedInscripcion = await updateInscripcionDateById(
+    const result = await updateInscripcionDateById(
       inscripcionId,
       userId,
       req.body.date,
     );
 
-    if (!updatedInscripcion) {
+    if (result.status === "not_found") {
       return res.status(404).json({
         message: "Inscripción no encontrada",
       });
     }
 
-    return res.status(200).json(updatedInscripcion);
+    if (result.status === "not_future") {
+      return res.status(400).json({
+        message: "La nueva fecha debe ser futura.",
+      });
+    }
+
+    if (result.status === "before_current_date") {
+      return res.status(400).json({
+        message: "La nueva fecha no puede ser anterior a la fecha actual de inscripción.",
+      });
+    }
+
+    return res.status(200).json(result.inscripcion);
   } catch (error) {
     console.error(error);
     return res.status(500).json({

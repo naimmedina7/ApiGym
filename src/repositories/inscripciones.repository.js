@@ -54,11 +54,29 @@ const deleteInscripcionById = async (inscripcionId, userId) => {
 };
 
 const updateInscripcionDateById = async (inscripcionId, userId, date) => {
-  return await Inscripcion.findOneAndUpdate(
-    { _id: inscripcionId, userId },
+  const newDate = new Date(date);
+  if (newDate <= new Date()) {
+    return { status: "not_future" };
+  }
+
+  const updatedInscripcion = await Inscripcion.findOneAndUpdate(
+    { _id: inscripcionId, userId, date: { $lte: newDate } },
     { $set: { date } },
     { returnDocument: "after", runValidators: true },
   );
+
+  if (updatedInscripcion) {
+    return { status: "updated", inscripcion: updatedInscripcion };
+  }
+
+  const existingInscripcion = await Inscripcion.exists({
+    _id: inscripcionId,
+    userId,
+  });
+
+  return existingInscripcion
+    ? { status: "before_current_date" }
+    : { status: "not_found" };
 };
 
 const getInscripcionesPaginated = async (userId, page = 1, limit = 5) => {
