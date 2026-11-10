@@ -79,12 +79,21 @@ const updateInscripcionDateById = async (inscripcionId, userId, date) => {
     : { status: "not_found" };
 };
 
-const getInscripcionesPaginated = async (userId, page = 1, limit = 5) => {
+const getInscripcionesPaginated = async (userId, page = 1, limit = 5, categoryId) => {
   const skip = (page - 1) * limit;
 
+  // Siempre: solo las inscripciones del usuario
+  const filtro = { userId };
+
+  // Si piden una categoría: solo las inscripciones a actividades de esa categoría
+  if (categoryId) {
+    const actividades = await Actividad.find({ categoryId }).select("_id");
+    filtro.activityId = { $in: actividades.map((actividad) => actividad._id) };
+  }
+
   const [inscripciones, total] = await Promise.all([
-    Inscripcion.find({ userId }).skip(skip).limit(limit),
-    Inscripcion.countDocuments({ userId }),
+    Inscripcion.find(filtro).skip(skip).limit(limit),
+    Inscripcion.countDocuments(filtro),
   ]);
 
   return {

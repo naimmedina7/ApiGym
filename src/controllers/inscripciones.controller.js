@@ -6,15 +6,23 @@ const {
   updateInscripcionDateById,
 } = require("../repositories/inscripciones.repository");
 
+const mongoose = require("mongoose");
 const sendSMS = require("../services/sms.service");
 
 const getInscripcionesController = async (req, res) => {
   const { id } = req.user;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
+  // Filtro opcional por categoría: ?categoryId=...
+  const { categoryId } = req.query;
+
+  // Si el categoryId tiene un formato inválido, respondemos 400 en vez de un 500
+  if (categoryId && !mongoose.Types.ObjectId.isValid(categoryId)) {
+    return res.status(400).json({ message: "El categoryId no es válido." });
+  }
 
   try {
-    const result = await getInscripcionesPaginated(id, page, limit);
+    const result = await getInscripcionesPaginated(id, page, limit, categoryId);
     res.status(200).json(result);
   } catch (error) {
     console.error(error);
