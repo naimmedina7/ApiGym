@@ -92,7 +92,7 @@ const postActividadController = async (req, res) => {
       );
     }
 
-    await createActividad(
+    const nuevaActividad = await createActividad(
       name,
       categoryId,
       generatedDescription,
@@ -100,9 +100,8 @@ const postActividadController = async (req, res) => {
       schedule,
     );
 
-    res.status(201).json({
-      message: "Actividad creada correctamente",
-    });
+    // Devolvemos la actividad creada (con su _id) para que el front la agregue a Redux
+    res.status(201).json(nuevaActividad);
   } catch (error) {
     if (error.message === "Ya existe una actividad con ese nombre.") {
       return res.status(409).json({ message: error.message });

@@ -66,7 +66,7 @@ const createActividad = async (
     schedule: schedule,
   });
 
-  await newActividad.save();
+  return await newActividad.save();
 };
 
 const deleteActividadById = async (id) => {

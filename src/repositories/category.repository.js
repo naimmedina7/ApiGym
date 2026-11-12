@@ -17,7 +17,7 @@ const createCategory = async (name) => {
   const newCategory = new Category({
     name: name,
   });
-  await newCategory.save();
+  return await newCategory.save();
 };
 
 const deleteCategoryById = async (id) => {

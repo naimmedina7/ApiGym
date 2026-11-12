@@ -60,10 +60,9 @@ const postInscripcionController = async (req, res) => {
   const { activityId, date, activityName } = req.body;
 
   try {
-    await createInscripcion(userId, activityId, date);
-    res.status(201).json({
-      message: "Inscripcion creada correctamente",
-    });
+    const nuevaInscripcion = await createInscripcion(userId, activityId, date);
+    // Devolvemos la inscripción creada (con su _id) para que el front la agregue a Redux
+    res.status(201).json(nuevaInscripcion);
     try {
       await sendSMS(
         process.env.ADMIN_PHONE_NUMBER,
